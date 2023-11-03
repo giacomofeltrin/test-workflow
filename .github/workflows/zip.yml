@@ -19,6 +19,8 @@ jobs:
       - name: Download .zip file
         run: |
           curl -L -o ciao.zip https://github.com/giacomofeltrin/test-workflow/archive/main.zip
+          git config --global user.email "actions@github.com"
+          git config --global user.name "zip[bot]"
           git add ciao.zip
           git commit -m "Add ciao.zip"
         shell: bash
