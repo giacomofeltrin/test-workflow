@@ -1,0 +1,69 @@
+# The version is automatically updated in the 'development' branch
+# Ensure 'autoVersion.json' exists for the workflow. Use 'fix' for PATCH and 'feat' for MINOR in commit messages; add 'BREAKING CHANGE' as footer for MAJOR updates.
+name: Automatic Version
+
+# Controls when the workflow will activate
+on:
+  push:
+    branches: [ "development" ]
+    paths-ignore:
+      - '**/autoVersion.json'
+      - '**/autoChangelog.md'
+
+  # Allows this workflow to be run manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  auto-version:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: 'development'
+
+      - name: Extract version and set as env variable
+        id: extract_version
+        run: |
+          DOT_VERSION=$(jq -r '.version' autoVersion.json)
+          OLD_VERSION=$(echo "$DOT_VERSION" | tr '.' '-')
+          echo "OLD_VERSION=$OLD_VERSION" >> $GITHUB_ENV
+
+      - name: Create and push branch for calculations
+        run: |
+          git checkout -b ex-$OLD_VERSION
+          git push origin ex-$OLD_VERSION
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: ex-${{ env.OLD_VERSION }} 
+
+      - name: Conventional Changelog Action
+        id: changelog
+        uses: TriPSs/conventional-changelog-action@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          release-count: '1000000'
+          output-file: autoChangelog.md
+          version-file: ./autoVersion.json
+          skip-ci: 'false'
+          git-branch: ex-${{ env.OLD_VERSION }}
+          git-message: '{version}'
+          git-user-name: 'versioning[bot]'
+
+      - name: Pushing to the protected branch 'development'
+        id: push-to-protected
+        uses: CasperWA/push-protected@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: development
+
+      - name: Delete merged branch for cleanup
+        id: delete-branch
+        run: git push origin --delete ex-${{ env.OLD_VERSION }}
