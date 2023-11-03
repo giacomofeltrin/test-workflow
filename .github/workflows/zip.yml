@@ -1,0 +1,34 @@
+name: Zip up code
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**.zip'
+
+
+jobs:
+  add_zip:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Download .zip file
+        run: |
+          curl -L -o ciao.zip https://github.com/giacomofeltrin/test-workflow/archive/main.zip
+        shell: bash
+
+      - name: Move .zip file to the main repository folder
+        run: |
+          mv ciao.zip $GITHUB_WORKSPACE
+        shell: bash
+
+      - name: Pushing to the protected branch 'main'
+        id: push-to-protected
+        uses: CasperWA/push-protected@v2
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          branch: main
