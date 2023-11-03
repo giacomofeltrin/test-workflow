@@ -21,6 +21,12 @@ jobs:
           curl -L -o ciao.zip https://github.com/giacomofeltrin/test-workflow/archive/main.zip
         shell: bash
 
+      - name: Move .zip file to the main repository folder
+        run: |
+          mv ciao.zip $GITHUB_WORKSPACE
+          git add ciao.zip
+          git commit -m "Add ciao.zip"
+        shell: bash
 
       - name: Pushing to the protected branch 'main'
         id: push-to-protected
