@@ -20,14 +20,11 @@ jobs:
         run: |
           ls -l
           rm -rf kodi20/zips
+          ls -l
           rm tmptorm
           python _repo_generator.py
-          pwd
-          cd kodi20/zips/
-          ls -la
-          cd ..
-          cd ..
-          mv kodi20/zips/chobe-0.0.1.zip .
+          ls -l
+          mv kodi20/zips/chobe/chobe-0.0.1.zip .
 
       - name: Pushing to the protected branch 'main'
         id: push-to-protected
