@@ -18,13 +18,14 @@ jobs:
 
       - name: clean repo, execute py, 
         run: |
-          ls -l
           rm -rf kodi20/zips
-          ls -l
           rm tmptorm
           python _repo_generator.py
-          ls -l
           mv kodi20/zips/chobe/chobe-0.0.1.zip .
+          git config --global user.email "actions@github.com"
+          git config --global user.name "action[bot]"
+          git add --all
+          git commit -m "Release"
 
       - name: Pushing to the protected branch 'main'
         id: push-to-protected
