@@ -22,7 +22,7 @@ jobs:
           rm -rf /kodi20/zips
           rm tmptorm
           python _repo_generator.py
-          ls -l /kodi20/
+          ls -l /kodi20
 #          ls -l /kodi20/zips/chobe/
 #          ls -l /kodi20/zips/
 #          mv /kodi20/zips/chobe-0.0.1.zip .
