@@ -18,8 +18,12 @@ jobs:
 
       - name: clean repo, execute py, 
         run: |
-          rm -rf kodi20/zips
-          rm tmptorm
+          if [ -d "kodi20/zips" ]; then
+            rm -rf kodi20/zips
+          fi
+          if [ -f "tmptorm" ]; then
+            rm tmptorm
+          fi
           python _repo_generator.py
           mv kodi20/zips/chobe/chobe-0.0.1.zip .
           git config --global user.email "actions@github.com"
