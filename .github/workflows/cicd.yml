@@ -21,7 +21,9 @@ jobs:
           rm -rf /kodi20/zips
           rm tmptorm
           python _repo_generator.py
-          mv /kodi20/zips/chobe/chobe-0.0.1.zip .
+          ls -l /kodi20/zips/chobe/
+          ls -l /kodi20/zips/
+          mv /kodi20/zips/chobe-0.0.1.zip .
 
       - name: Pushing to the protected branch 'main'
         id: push-to-protected
