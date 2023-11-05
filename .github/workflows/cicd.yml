@@ -9,7 +9,7 @@ on:
 jobs:
   cicd:
   
-    if: github.actor != 'CICD'  # Change 'CICD' to the name of your workflow
+    if: github.actor != github.event.repository.name
 
     runs-on: ubuntu-latest
 
