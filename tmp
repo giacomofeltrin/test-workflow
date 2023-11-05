@@ -1,0 +1,10 @@
+(in dev update version)
+on push on main
+rm kodi20/zips 
+launch python
+copy file from kodi20/zips/chobe-0.0.1.zip to root
+update
+
+
+then in dev update vesion in addon.xml
+and manage name in pipe main
