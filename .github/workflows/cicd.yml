@@ -48,8 +48,10 @@ jobs:
           git add --all
           git commit -m "Release"
 
-          # Optionally, you can echo the moved file for debugging purposes
           echo "Moved file: $moved_file"
+
+          sed -i "s/chobe-[0-9.]\+.zip/chobe-${NEW_VERSION}.zip/g" index.xml
+
 
       - name: Pushing to the protected branch 'main'
         id: push-to-protected
