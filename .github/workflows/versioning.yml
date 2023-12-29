@@ -67,7 +67,11 @@ jobs:
 
       - name: Update addon.xml version
         run: |
+          cat kodi20/chobe/addon.xml
+
           sed -i "s/version=\"[0-9]\+\.[0-9]\+\.[0-9]\+\"/version=\"${{ env.NEW_VERSION }}\"/" kodi20/chobe/addon.xml
+          cat kodi20/chobe/addon.xml
+
           git add kodi20/chobe/addon.xml
           git commit -m "chore: Update addon.xml version to ${{ env.NEW_VERSION }}"
         shell: bash
