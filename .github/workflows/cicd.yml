@@ -17,6 +17,13 @@ jobs:
         with:
           ref: 'main'
 
+      - name: Extract version and set as env variable
+        id: extract_new_version
+        run: |
+          DOT_VERSION=$(jq -r '.version' autoVersion.json)
+          NEW_VERSION=$(echo "$DOT_VERSION")
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+
       - name: clean repo, execute py, commit
         run: |
           if [ -d "kodi20/zips" ]; then
@@ -31,7 +38,7 @@ jobs:
           python _repo_generator.py
 
           # Move the generated .zip file with the dynamic version in the filename
-          mv "kodi20/zips/chobe/chobe-*.zip" .
+          mv "kodi20/zips/chobe/chobe-${{ env.NEW_VERSION }}.zip" .
           
           # Get the name of the moved file
           moved_file=$(find . -name "chobe-*.zip" -type f)
