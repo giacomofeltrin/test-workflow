@@ -43,14 +43,16 @@ jobs:
           # Get the name of the moved file
           moved_file=$(find . -name "chobe-*.zip" -type f)
 
+          sed -i "s/chobe-[0-9.]\+.zip/chobe-${NEW_VERSION}.zip/g" index.html
+          
+          echo "Moved file: $moved_file"
+
           git config --global user.email "actions@github.com"
           git config --global user.name "action[bot]"
           git add --all
           git commit -m "Release"
 
-          echo "Moved file: $moved_file"
 
-          sed -i "s/chobe-[0-9.]\+.zip/chobe-${NEW_VERSION}.zip/g" index.html
 
 
       - name: Pushing to the protected branch 'main'
