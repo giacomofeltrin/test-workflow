@@ -59,7 +59,7 @@ jobs:
           git-user-name: 'versioning[bot]'
 
       - name: Extract version and set as env variable
-        id: extract_version
+        id: extract_new_version
         run: |
           DOT_VERSION=$(jq -r '.version' autoVersion.json)
           NEW_VERSION=$(echo "$DOT_VERSION" | tr '.' '-')
