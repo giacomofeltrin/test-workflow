@@ -22,15 +22,27 @@ jobs:
           if [ -d "kodi20/zips" ]; then
             rm -rf kodi20/zips
           fi
-          if [ -f "chobe-0.0.1.zip" ]; then
-            rm chobe-0.0.1.zip
-          fi
+
+          # Remove any file matching the pattern "chobe-*.zip"
+          for file in chobe-*.zip; do
+            rm "$file"
+          done
+
           python _repo_generator.py
-          mv kodi20/zips/chobe/chobe-0.0.1.zip .
+
+          # Move the generated .zip file with the dynamic version in the filename
+          mv "kodi20/zips/chobe/chobe-*.zip" .
+          
+          # Get the name of the moved file
+          moved_file=$(find . -name "chobe-*.zip" -type f)
+
           git config --global user.email "actions@github.com"
           git config --global user.name "action[bot]"
           git add --all
           git commit -m "Release"
+
+          # Optionally, you can echo the moved file for debugging purposes
+          echo "Moved file: $moved_file"
 
       - name: Pushing to the protected branch 'main'
         id: push-to-protected
