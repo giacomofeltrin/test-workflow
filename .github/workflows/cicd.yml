@@ -50,7 +50,7 @@ jobs:
 
           echo "Moved file: $moved_file"
 
-          sed -i "s/chobe-[0-9.]\+.zip/chobe-${NEW_VERSION}.zip/g" index.xml
+          sed -i "s/chobe-[0-9.]\+.zip/chobe-${NEW_VERSION}.zip/g" index.html
 
 
       - name: Pushing to the protected branch 'main'
