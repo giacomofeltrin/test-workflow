@@ -1,0 +1,84 @@
+# The version is automatically updated in the 'main' branch
+# Ensure 'autoVersion.json' exists for the workflow. Use 'fix' for PATCH and 'feat' for MINOR in commit messages; add 'BREAKING CHANGE' as footer for MAJOR updates.
+name: Automatic Version
+
+# Controls when the workflow will activate
+on:
+  push:
+    branches: [ "main" ]
+    paths-ignore:
+      - '**/autoVersion.json'
+      - '**/autoChangelog.md'
+      - '**/addon.xml'
+
+  # Allows this workflow to be run manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  auto-version:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: 'main'
+
+      - name: Extract version and set as env variable
+        id: extract_version
+        run: |
+          DOT_VERSION=$(jq -r '.version' autoVersion.json)
+          OLD_VERSION=$(echo "$DOT_VERSION" | tr '.' '-')
+          echo "OLD_VERSION=$OLD_VERSION" >> $GITHUB_ENV
+
+      - name: Create and push branch for calculations
+        run: |
+          git checkout -b ex-$OLD_VERSION
+          git push origin ex-$OLD_VERSION
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: ex-${{ env.OLD_VERSION }} 
+
+      - name: Conventional Changelog Action
+        id: changelog
+        uses: TriPSs/conventional-changelog-action@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          release-count: '1000000'
+          output-file: autoChangelog.md
+          version-file: ./autoVersion.json
+          skip-ci: 'false'
+          git-branch: ex-${{ env.OLD_VERSION }}
+          git-message: '{version}'
+          git-user-name: 'versioning[bot]'
+
+      - name: Extract version and set as env variable
+        id: extract_version
+        run: |
+          DOT_VERSION=$(jq -r '.version' autoVersion.json)
+          NEW_VERSION=$(echo "$DOT_VERSION" | tr '.' '-')
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+
+      - name: Update addon.xml version
+        run: |
+          sed -i "s/version=\"[0-9]\+\.[0-9]\+\.[0-9]\+\"/version=\"${{ env.NEW_VERSION }}\"/" kodi20/chobe/addon.xml
+          git add kodi20/chobe/addon.xml
+          git commit -m "chore: Update addon.xml version to ${{ env.NEW_VERSION }}"
+        shell: bash
+
+      - name: Pushing to the protected branch 'main'
+        id: push-to-protected
+        uses: CasperWA/push-protected@v2
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          branch: main
+
+      - name: Delete merged branch for cleanup
+        id: delete-branch
+        run: git push origin --delete ex-${{ env.OLD_VERSION }}
