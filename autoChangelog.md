@@ -1,4 +1,13 @@
-## 0.11.7 (2023-12-29)
+## [0.11.8](https://github.com/giacomofeltrin/test-workflow/compare/v0.11.7...v0.11.8) (2023-12-29)
+
+
+### Bug Fixes
+
+* up ([542492a](https://github.com/giacomofeltrin/test-workflow/commit/542492a0177aeaa935a9a22054b84c20bef7d27c))
+
+
+
+## [0.11.7](https://github.com/giacomofeltrin/test-workflow/compare/c87716bcf066419df5bc6c2a5dee38ea7baacecb...v0.11.7) (2023-12-29)
 
 
 ### Bug Fixes
